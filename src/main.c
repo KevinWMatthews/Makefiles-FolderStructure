@@ -9,7 +9,7 @@ int main(int argc, char * argv[])
   printf("You're in main()\n");
 
   ret = module_DummyFunc(7);
-  printf("Calling module_DummyFunc(): %d", ret);
+  printf("Calling  module_DummyFunc(): %d", ret);
 
   return 0;
 }

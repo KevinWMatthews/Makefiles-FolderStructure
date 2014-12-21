@@ -1,32 +1,41 @@
+#This makefile...
+#		auto-detects source fcode
+#		does not build object code or dependency list, but we want to
+#		places executable in the debug folder
+#		does not yet have a library
+#		does reference the inc folder
+#		check to see if include file and/or src code file changes trigger a rebuild
+
 SILENCE=@
 
 TARGETNAME=main
 TARGET=$(DBGDIR)/$(TARGETNAME)
 
-#TODO auto-detect source code
 #TODO auto-detect include files
-SRC=$(SRCDIR)/main.c $(SRCDIR)/module.c
-INC=$(INCDIR)/module.h
+SRC=$(wildcard $(SRCDIR)/*.c)
+#INC=$(INCDIR)/module.h
 
 SRCDIR=./src
 INCDIR=./inc
 OBJDIR=./obj
 #TODO add library code
 LIBDIR=./lib
-DBGDIR=debug
+DBGDIR=./debug
 
-.PHONY: all clean
+.PHONY: all clean rebuild
 
-all:
-	gcc $(SRC) -I$(INCDIR) -o $(TARGET)
+#I think the top one executes by default
+rebuild:
+	make clean
+	make all
+
+all: $(TARGET)
 	@echo "\nExecuting $(TARGET)..."
 	$(SILENCE)./$(TARGET)
 	@echo "\n...Execution finished!\n"
 
-#$(TARGET): $(SRC)
-
-srctest:
-	echo $(src_files)
+$(TARGET): $(SRC)
+	gcc $^ -I$(INCDIR) -o $@
 
 clean:
 	@echo "Cleaning project..."
@@ -38,4 +47,3 @@ clean:
 
 #$(wildcard <pattern ...>)
 #is replaced with a space-separated list of names that match the pattern.
-src_files = $(wildcard $(SRCDIR)/*.c)
