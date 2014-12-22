@@ -14,6 +14,8 @@
 
 SILENCE=
 
+CCOMPILER=gcc
+
 TARGETNAME=main
 TARGET=$(DBGDIR)/$(TARGETNAME)
 
@@ -50,14 +52,14 @@ $(TARGET): $(OBJ)
 	@echo "\nLinking $@..."
 #Create the directory for the executable, if needed
 	$(SILENCE)mkdir -p $(dir $@)
-	$(SILENCE)gcc $^ -I$(INCDIR) -o $@
+	$(SILENCE)$(CCOMPILER) $^ -I$(INCDIR) -o $@
 
 $(OBJDIR)/%.o: %.c
 	@echo "\nCompiling $(notdir $<)..."
 #Create the directory for the object file, if needed
 	$(SILENCE)mkdir -p $(dir $@)
 #Create the object file
-	$(SILENCE)gcc -c $< -I$(INCDIR) -o $@
+	$(SILENCE)$(CCOMPILER) -c $< -I$(INCDIR) -o $@
 
 debug:
 	@echo SRC:
