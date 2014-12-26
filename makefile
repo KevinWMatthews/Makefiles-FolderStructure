@@ -1,151 +1,86 @@
-#This makefile...
-#		auto-detects source fcode
-#		does not build object code or dependency list, but we want to
-#		places executable in the debug folder
-#		does not yet have a library
-#		does reference the inc folder
-#		check to see if include file and/or src code file changes trigger a rebuild
-#		think about what to do with obj/./src and so on. Do we want/need the extra '.'s?
-#		Place helper functions in a separate makefile so that we ensure that they are build first. Order matters!!
-#		Create STUFF_TO_CLEAN
-#		Separate "build" from "all". Build should only build. All will execute the code too.
-#		Add colors to output
-#		Add dependency files
+#General makefile that can be used for launching either test or production code
 
-SILENCE=
+#Set to execute test code, clear to execute production code
+TEST=
 
-### Name of output file ###
-TARGET_NAME=main
-TARGET=$(TARGET_DIR)/$(TARGET_NAME)
+ifdef TEST
+all: UnityTest
 
-### Debug (Set to debug, clear for production) ###
-DEBUG=
+rebuild: UnityRebuild
 
-### Compiler tools ###
-CCOMPILER=gcc
-ASSEMBLER=gcc
+clean: UnityClean
 
-### Directory structure ###
-SRC_DIR=src
-INC_DIR=inc
-OBJ_DIR=obj
-#TODO add library code
-LIB_DIR=lib
-DEBUG_DIR=debug
-TARGET_DIR=debug
+debug: UnityDebug
 
-### Automatically detect source code and create object files ###
-SRC=$(wildcard $(SRC_DIR)/*.c)
-obj_src=$(patsubst %.c,%.o,$(SRC))
-OBJ_SRC=$(addprefix $(OBJ_DIR)/,$(obj_src))
+flags: UnityFlags
 
-### Flags ###
-CCOMPILER_FLAGS = -c
+filelist: UnityFileList
 
-### Debug flags ###
-ifdef DEBUG
-	DEBUG_FLAGS = -g
+help: UnityHelp
+else
+all: Production
+
+rebuild: ProductionRebuild
+
+clean: ProductionClean
+
+debug: ProductionDebug
+
+flags: ProductionFlags
+
+filelist: ProductionFileList
+
+help: ProductionHelp
 endif
 
-### Build options ###
-.PHONY: rebuild all clean debug help
-.PHONY: compile assemble link
-.PHONY: filelist
 
-rebuild:
-	$(SILENCE)make clean
-	$(SILENCE)make all
+### Prerequisite definitions ###
+#-f or --file=
+#-i or --ignore-errors continues makefile execution if part of a recipe fails (say, rm *.o)
+### Production ###
+Production:
+	make -f MakefileProduction.make
 
-debug:
-	@echo TODO learn to use GDB
-#	$(SILENCE)make all
-#	@echo
-#	@echo "Launching GDB..."
-#	$(SILENCE)$(DEBUGGER) $(TARGET)
+ProductionAll:
+	make -f MakefileProduction.make all
 
-all: $(TARGET)
-	@echo "${Yellow}\nExecuting $(TARGET)...${NoColor}"
-	$(SILENCE)$(TARGET)
-	@echo "\n${Green}...Execution finished!${NoColor}\n"
+ProductionRebuild:
+	make -f MakefileProduction.make clean
+	make -f MakefileProduction.make
 
-$(TARGET): $(OBJ_SRC)
-	@echo "\n${Yellow}Linking $@...${NoColor}"
-	$(SILENCE)mkdir -p $(dir $@)
-	$(SILENCE)$(ASSEMBLER) $(CPU) $^ -I$(INC_DIR) -o $@
+ProductionClean:
+	make -f MakefileProduction.make clean
 
-$(OBJ_DIR)/%.o: %.c
-	@echo "\n${Yellow}Compiling $(notdir $<)...${NoColor}"
-	$(SILENCE)mkdir -p $(dir $@)
-	$(SILENCE)$(CCOMPILER) $(CPU) -c $< -I$(INC_DIR) -o $@
+ProductionDebug:
+	make -f MakefileProduction.make debug
 
-filelist:
-	@echo "  ${LightPurple}TARGET:${NoColor}"
-	@echo "$(TARGET)\n"
-	@echo "  ${LightPurple}SRC:${NoColor}"
-	@echo "$(SRC)\n"
-	@echo "  ${LightPurple}OBJ_SRC:${NoColor}"
-	@echo "$(OBJ_SRC)\n"
+ProductionFlags:
+	make -f MakefileProduction.make flags
 
-clean:
-	@echo "${Yellow}Cleaning project...${NoColor}"
-	$(SILENCE)rm -rf $(DEBUG_DIR)
-	$(SILENCE)rm -rf $(OBJ_DIR)
-	@echo "${Green}...Clean finished!${NoColor}\n"
+ProductionFileList:
+	make -f MakefileProduction.make filelist
 
-colortest:
-	@echo "${Blue}Blue${NC}"
-	@echo "${LightBlue}LightBlue${NC}"
-	@echo "${Gray}Gray${NC}"
-	@echo "${DarkGray}DarkGray${NC}"
-	@echo "${Green}Green${NC}"
-	@echo "${LightGreen}LightGreen${NC}"
-	@echo "${Cyan}Cyan${NC}"
-	@echo "${LightCyan}LightCyan${NC}"
-	@echo "${Red}Red${NC}"
-	@echo "${LightRed}LightRed${NC}"
-	@echo "${Purple}Purple${NC}"
-	@echo "${LightPurple}LightPurple${NC}"
-	@echo "${Orange}Orange${NC}"
-	@echo "${Yellow}Yellow${NC}"
-	@echo "${White}White${NC}"
-	@echo "${NoColor}NoColor${NC}"
+ProductionHelp:
+	make -f MakefileProduction.make help
 
-### Color codes ###
-Blue       =\033[0;34m
-LightBlue  =\033[1;34m
-Gray       =\033[0;37m
-DarkGray   =\033[1;30m
-Green      =\033[0;32m
-LightGreen =\033[1;32m
-Cyan       =\033[0;36m
-LightCyan  =\033[1;36m
-Red        =\033[0;31m
-LightRed   =\033[1;31m
-Purple     =\033[0;35m
-LightPurple=\033[1;35m
-Yellow     =\033[0;33m
-LihtYellow =\033[1;33m
-White      =\033[0;37m
-NoColor    =\033[0;0m
+### Unity prerequisite definitions ###
+UnityTest:
+	@echo TODO
 
-### Documentation for built-in functions ###
-# $@	the name of the target
-# $<	the name of the first prerequisite
-# $^	the names of all prerequisites separated by a space
+UnityRebuild:
+	@echo TODO
 
-# $(call fcn,$1,$2,...)
-# make sure you put a comma directly after fcn. If you don't it won't work.
+UnityClean:
+	@echo TODO
 
-# $(wildcard <pattern ...>)
-# is replaced with a space-separated list of names that match the pattern.
+UnityDebug:
+	@echo TODO
 
-# $(patsubst <pattern>,<replacement>,<text_to_search>)
+UnityFlags:
+	@echo TODO
 
-# $(addprefix <prefix>,<names_to_edit>)
+UnityFileList:
+	@echo TODO
 
-# $(notdir <names ...>)
-# extract the non-directory part of each filename
-
-#TODO look up documentation again
-# mkdir -p
-# creates all parent directories?
+UnityHelp:
+	@echo TODO
