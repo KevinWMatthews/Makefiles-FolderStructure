@@ -14,75 +14,119 @@
 
 SILENCE=
 
+### Name of output file ###
+TARGET_NAME=main
+TARGET=$(TARGET_DIR)/$(TARGET_NAME)
+
+### Debug (Set to debug, clear for production) ###
+DEBUG=
+
+### Compiler tools ###
 CCOMPILER=gcc
+ASSEMBLER=gcc
 
-TARGETNAME=main
-TARGET=$(DBGDIR)/$(TARGETNAME)
-
-#TODO auto-detect include files
-SRC=$(all_src_files_w_dir)
-#INC=$(INCDIR)/module.h
-OBJ=$(all_obj_files_w_dir)
-
-SRCDIR=./src
-INCDIR=./inc
-OBJDIR=./obj
+### Directory structure ###
+SRC_DIR=src
+INC_DIR=inc
+OBJ_DIR=obj
 #TODO add library code
-LIBDIR=./lib
-DBGDIR=./debug
+LIB_DIR=lib
+DEBUG_DIR=debug
+TARGET_DIR=debug
 
-### Helper Functions and Intermediate Variables ###
-all_src_files_w_dir = $(wildcard $(SRCDIR)/*.c)
-obj_files = $(patsubst %.c,%.o,$(SRC))
-all_obj_files_w_dir = $(addprefix $(OBJDIR)/,$(obj_files))
+### Automatically detect source code and create object files ###
+SRC=$(wildcard $(SRC_DIR)/*.c)
+obj_src=$(patsubst %.c,%.o,$(SRC))
+OBJ_SRC=$(addprefix $(OBJ_DIR)/,$(obj_src))
 
-.PHONY: all clean rebuild debug fulldebug
+### Flags ###
+CCOMPILER_FLAGS = -c
 
-#I think the top one executes by default
+### Debug flags ###
+ifdef DEBUG
+	DEBUG_FLAGS = -g
+endif
+
+### Build options ###
+.PHONY: rebuild all clean debug help
+.PHONY: compile assemble link
+.PHONY: filelist
+
 rebuild:
-	make clean
-	make all
-
-all: $(TARGET)
-	@echo "\nExecuting $(TARGET)..."
-	$(SILENCE)$(TARGET)
-	@echo "\n...Execution finished!\n"
-
-$(TARGET): $(OBJ)
-	@echo "\nLinking $@..."
-#Create the directory for the executable, if needed
-	$(SILENCE)mkdir -p $(dir $@)
-	$(SILENCE)$(CCOMPILER) $^ -I$(INCDIR) -o $@
-
-$(OBJDIR)/%.o: %.c
-	@echo "\nCompiling $(notdir $<)..."
-#Create the directory for the object file, if needed
-	$(SILENCE)mkdir -p $(dir $@)
-#Create the object file
-	$(SILENCE)$(CCOMPILER) -c $< -I$(INCDIR) -o $@
+	$(SILENCE)make clean
+	$(SILENCE)make all
 
 debug:
-	@echo SRC:
-	@echo "$(SRC)\n"
-	@echo OBJ:
-	@echo "$(OBJ)\n"
+	@echo TODO learn to use GDB
+#	$(SILENCE)make all
+#	@echo
+#	@echo "Launching GDB..."
+#	$(SILENCE)$(DEBUGGER) $(TARGET)
 
-fulldebug:
-	@echo all_src_files_w_dir:
-	@echo "$(all_src_files_w_dir)\n"
-	@echo obj_files:
-	@echo "$(obj_files)\n"
-	@echo all_obj_files_w_dir:
-	@echo "$(all_obj_files_w_dir)\n"
+all: $(TARGET)
+	@echo "${Yellow}\nExecuting $(TARGET)...${NoColor}"
+	$(SILENCE)$(TARGET)
+	@echo "\n${Green}...Execution finished!${NoColor}\n"
+
+$(TARGET): $(OBJ_SRC)
+	@echo "\n${Yellow}Linking $@...${NoColor}"
+	$(SILENCE)mkdir -p $(dir $@)
+	$(SILENCE)$(ASSEMBLER) $(CPU) $^ -I$(INC_DIR) -o $@
+
+$(OBJ_DIR)/%.o: %.c
+	@echo "\n${Yellow}Compiling $(notdir $<)...${NoColor}"
+	$(SILENCE)mkdir -p $(dir $@)
+	$(SILENCE)$(CCOMPILER) $(CPU) -c $< -I$(INC_DIR) -o $@
+
+filelist:
+	@echo "  ${LightPurple}TARGET:${NoColor}"
+	@echo "$(TARGET)\n"
+	@echo "  ${LightPurple}SRC:${NoColor}"
+	@echo "$(SRC)\n"
+	@echo "  ${LightPurple}OBJ_SRC:${NoColor}"
+	@echo "$(OBJ_SRC)\n"
 
 clean:
-	@echo "Cleaning project..."
-#Delete the debug folder!!
-	$(SILENCE)rm -rf $(DBGDIR)
-#Delete the obj folder
-	$(SILENCE)rm -rf $(OBJDIR)
-	@echo "Clean finished!\n"
+	@echo "${Yellow}Cleaning project...${NoColor}"
+	$(SILENCE)rm -rf $(DEBUG_DIR)
+	$(SILENCE)rm -rf $(OBJ_DIR)
+	@echo "${Green}...Clean finished!${NoColor}\n"
 
+colortest:
+	@echo "${Blue}Blue${NC}"
+	@echo "${LightBlue}LightBlue${NC}"
+	@echo "${Gray}Gray${NC}"
+	@echo "${DarkGray}DarkGray${NC}"
+	@echo "${Green}Green${NC}"
+	@echo "${LightGreen}LightGreen${NC}"
+	@echo "${Cyan}Cyan${NC}"
+	@echo "${LightCyan}LightCyan${NC}"
+	@echo "${Red}Red${NC}"
+	@echo "${LightRed}LightRed${NC}"
+	@echo "${Purple}Purple${NC}"
+	@echo "${LightPurple}LightPurple${NC}"
+	@echo "${Orange}Orange${NC}"
+	@echo "${Yellow}Yellow${NC}"
+	@echo "${White}White${NC}"
+	@echo "${NoColor}NoColor${NC}"
+
+### Color codes ###
+Blue       =\033[0;34m
+LightBlue  =\033[1;34m
+Gray       =\033[0;37m
+DarkGray   =\033[1;30m
+Green      =\033[0;32m
+LightGreen =\033[1;32m
+Cyan       =\033[0;36m
+LightCyan  =\033[1;36m
+Red        =\033[0;31m
+LightRed   =\033[1;31m
+Purple     =\033[0;35m
+LightPurple=\033[1;35m
+Yellow     =\033[0;33m
+LihtYellow =\033[1;33m
+White      =\033[0;37m
+NoColor    =\033[0;0m
 
 ### Documentation for built-in functions ###
 # $@	the name of the target
