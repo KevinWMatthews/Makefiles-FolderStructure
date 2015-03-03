@@ -1,86 +1,53 @@
-#General makefile that can be used for launching either test or production code
-
-#Set to execute test code, clear to execute production code
-TEST=
-
-ifdef TEST
-all: UnityTest
-
-rebuild: UnityRebuild
-
-clean: UnityClean
-
-debug: UnityDebug
-
-flags: UnityFlags
-
-filelist: UnityFileList
-
-help: UnityHelp
-else
-all: Production
-
-rebuild: ProductionRebuild
-
-clean: ProductionClean
-
-debug: ProductionDebug
-
-flags: ProductionFlags
-
-filelist: ProductionFileList
-
-help: ProductionHelp
+# Set this to @ to keep the makefile quiet
+ifndef SILENCE
+	SILENCE =
 endif
 
+# Y/N
+ifndef DEBUG
+	DEBUG=N
+endif
 
-### Prerequisite definitions ###
-#-f or --file=
-#-i or --ignore-errors continues makefile execution if part of a recipe fails (say, rm *.o)
-### Production ###
-Production:
-	make -f MakefileProduction.make
+# Run unit tests
+ifndef USE_CPPUTEST
+	USE_CPPUTEST = N
+endif
 
-ProductionAll:
-	make -f MakefileProduction.make all
+### Directory structure and library list ###
+TARGET_NAME=FolderStructure
+TARGET_DIR=build
+TARGET=$(TARGET_DIR)/$(TARGET_NAME)
 
-ProductionRebuild:
-	make -f MakefileProduction.make clean
-	make -f MakefileProduction.make
+# Production code
+SRC_DIRS=src
+INC_DIRS=inc
+LIB_DIRS=lib
+#Static library names without lib prefix and .a suffix
+LIB_LIST=
+OBJ_DIR=obj
 
-ProductionClean:
-	make -f MakefileProduction.make clean
+# MCU-specific production code
+MCU_SRC_DIR=
+MCU_INC_DIR=
+MCU_LIB_DIRS=
+MCU_LIB_LIST=
 
-ProductionDebug:
-	make -f MakefileProduction.make debug
+# CppUTest test harness source code
+CPPUTEST_DIR=
+CPPUTEST_HOME=
+CPPUTEST_INC_DIR=
+CPPUTEST_LIB_DIR=
+CPPUTEST_LIB_LIST=
 
-ProductionFlags:
-	make -f MakefileProduction.make flags
+# User unit tests
+TEST_DIR=test
+TEST_SRC_DIRS=$(TEST_DIR)/src $(TEST_DIR)/mocks
+TEST_INC_DIR=$(TEST_DIR)/inc
+TEST_LIB_DIRS=$(TEST_DIR)/lib
+#Static library names without lib prefix and .a suffix
+TEST_LIB_LIST=
+TEST_TARGET_DIR=$(TEST_DIR)/build
+TEST_OBJ_DIR=$(TEST_DIR)/$(OBJ_DIR)
 
-ProductionFileList:
-	make -f MakefileProduction.make filelist
-
-ProductionHelp:
-	make -f MakefileProduction.make help
-
-### Unity prerequisite definitions ###
-UnityTest:
-	@echo TODO
-
-UnityRebuild:
-	@echo TODO
-
-UnityClean:
-	@echo TODO
-
-UnityDebug:
-	@echo TODO
-
-UnityFlags:
-	@echo TODO
-
-UnityFileList:
-	@echo TODO
-
-UnityHelp:
-	@echo TODO
+# Do the real work
+include MakefileWorker.make

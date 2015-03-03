@@ -1,1 +1,5 @@
-colortest build option
+build object code or dependency list
+create STUFF_TO_CLEAN?
+Separate "build" from "all". Build should only build. All will execute the code too.
+Check to see if include file and/or src code file changes trigger a rebuild
+Test "test" rules
