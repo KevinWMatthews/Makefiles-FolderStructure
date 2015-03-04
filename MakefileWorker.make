@@ -14,8 +14,8 @@
 #Dat hard to do.
 
 ### Compiler tools ###
-COMPILER=g++
-LINKER=g++
+COMPILER=gcc
+LINKER=gcc
 ARCHIVER=ar
 
 ### Generate and set flags ###

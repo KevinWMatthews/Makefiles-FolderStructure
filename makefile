@@ -20,10 +20,10 @@ TARGET=$(TARGET_DIR)/$(TARGET_NAME)
 
 # Production code
 SRC_DIRS=src
-INC_DIRS=inc
-LIB_DIRS=lib
+INC_DIRS=inc ../Libraries/SampleMath/inc
+LIB_DIRS=../Libraries/SampleMath/build
 #Static library names without lib prefix and .a suffix
-LIB_LIST=
+LIB_LIST=SampleMath
 OBJ_DIR=obj
 
 # MCU-specific production code
