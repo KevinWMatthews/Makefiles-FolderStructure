@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "module.h"
 #include "SampleMath.h"
+#include "SampleMathExt.h"
 
 int main(int argc, char * argv[])
 {
@@ -14,6 +15,9 @@ int main(int argc, char * argv[])
 
   ret = SampleMath_Multiply(7, 4);
   printf("Calling SampleMath_Add(): %d\n", ret);
+
+  ret = SampleMathExt_Power(3, 4);
+  printf("Calling SampleMathExt_Power(): %d\n", ret);
 
   return 0;
 }
