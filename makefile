@@ -49,5 +49,10 @@ TEST_LIB_LIST=
 TEST_TARGET_DIR=$(TEST_DIR)/build
 TEST_OBJ_DIR=$(TEST_DIR)/$(OBJ_DIR)
 
+### Compiler tools ###
+COMPILER=gcc
+LINKER=gcc
+ARCHIVER=ar
+
 # Do the real work
 include MakefileWorker.make
