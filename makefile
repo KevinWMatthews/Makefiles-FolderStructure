@@ -3,20 +3,10 @@ ifndef SILENCE
 	SILENCE =
 endif
 
-# Y/N
-ifndef DEBUG
-	DEBUG=N
-endif
-
-# Run unit tests
-ifndef USE_CPPUTEST
-	USE_CPPUTEST = N
-endif
-
-### Directory structure and library list ###
+### Directory structure ###
+# Output file
 TARGET_NAME=FolderStructure
 TARGET_DIR=build
-TARGET=$(TARGET_DIR)/$(TARGET_NAME)
 
 # Production code
 SRC_DIRS=src
@@ -33,11 +23,11 @@ MCU_LIB_DIRS=
 MCU_LIB_LIST=
 
 # CppUTest test harness source code
-CPPUTEST_DIR=
-CPPUTEST_HOME=
-CPPUTEST_INC_DIR=
-CPPUTEST_LIB_DIR=
-CPPUTEST_LIB_LIST=
+CPPUTEST_DIR=cpputest-3.6
+CPPUTEST_PATH=../../../$(CPPUTEST_DIR)
+CPPUTEST_INC_DIR=$(CPPUTEST_PATH)/include
+CPPUTEST_LIB_DIR=$(CPPUTEST_PATH)/lib
+CPPUTEST_LIB_LIST=CppUTest CppUTestExt
 
 # User unit tests
 TEST_DIR=test
@@ -49,10 +39,14 @@ TEST_LIB_LIST=
 TEST_TARGET_DIR=$(TEST_DIR)/build
 TEST_OBJ_DIR=$(TEST_DIR)/$(OBJ_DIR)
 
+
 ### Compiler tools ###
 COMPILER=gcc
 LINKER=gcc
 ARCHIVER=ar
+TEST_COMPILER=g++
+TEST_LINKER=g++
+
 
 # Do the real work
 include MakefileWorker.make
