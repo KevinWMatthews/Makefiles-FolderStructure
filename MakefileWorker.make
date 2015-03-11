@@ -13,8 +13,7 @@
 # Dat hard to do.
 
 ### Generate target name ###
-target=$(TARGET_DIR)/$(TARGET_NAME)
-TARGET=$(addsuffix .a,$(target))
+TARGET=$(TARGET_DIR)/$(TARGET_NAME)
 
 
 ### Generate and set flags ###
