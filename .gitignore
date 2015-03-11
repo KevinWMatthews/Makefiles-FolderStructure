@@ -1,2 +1,7 @@
+#Ignore production code build results
 build/*
 obj/*
+
+#Ignore test code build results
+test/build/*
+test/obj/*
